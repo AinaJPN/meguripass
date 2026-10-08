@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; base-uri 'none'; form-action 'none'">
+<meta charset="utf-8">
+<title>MeguriPass</title>
+<style>
+body{margin:0;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:#f3f1ec;color:#2b2b2b;}
+.app{width:1280px;height:720px;box-sizing:border-box;padding:28px 40px;background:linear-gradient(180deg,#fff7ec,#f3f1ec);}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.logo{font-size:28px;font-weight:700;color:#c0392b;}
+.tag{font-size:13px;color:#777;}
+.toggle{background:#2b2b2b;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 3px 8px rgba(0,0,0,0.08);}
+.row{display:flex;gap:24px;}
+.col-main{flex:2;}
+.col-side{flex:1;}
+.stampgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;}
+.stamp{height:90px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;background:#eee;border:2px dashed #ccc;color:#bbb;}
+.stamp.filled{background:#fdf0e3;border:2px solid #e67e22;color:#e67e22;}
+.progresswrap{height:14px;background:#eee;border-radius:7px;overflow:hidden;margin-top:6px;}
+.progressfill{height:100%;background:#e67e22;width:66%;transition:width .3s;}
+.scanbtn{margin-top:16px;background:#c0392b;color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:14px;cursor:pointer;}
+.banner{display:none;margin-top:14px;background:#e9f8ee;color:#1e8449;padding:12px;border-radius:8px;font-weight:600;}
+.enterbtn{margin-top:10px;background:#aaa;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:not-allowed;font-size:13px;}
+.enterbtn.active{background:#8e44ad;cursor:pointer;}
+.panel{display:none;margin-top:12px;background:#f5effb;border-radius:8px;padding:12px;font-size:13px;color:#5b2d82;}
+.lbitem{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:13px;}
+.footer{margin-top:14px;font-size:11px;color:#999;text-align:center;}
+.hidden{display:none;}
+.vcard{background:#fff;border-radius:12px;padding:18px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.06);}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:20px 0;}
+.vnum{font-size:30px;font-weight:700;color:#c0392b;}
+.createbtn{background:#2b2b2b;color:#fff;border:none;padding:12px 18px;border-radius:8px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div><div class="logo">MeguriPass</div><div class="tag">Theme park digital stamp rally — Solana cNFT stamps</div></div>
+    <button class="toggle" data-demo="toggle-view-btn" onclick="toggleView()">View Venue Dashboard</button>
+  </div>
+
+  <div id="visitor-view" data-demo="visitor-view">
+    <div class="row">
+      <div class="col-main card">
+        <h3>Your Stamp Collection — Fuji Fantasy Park</h3>
+        <div class="stampgrid">
+          <div class="stamp filled" data-demo="stamp-1">★</div>
+          <div class="stamp filled" data-demo="stamp-2">★</div>
+          <div class="stamp filled" data-demo="stamp-3">★</div>
+          <div class="stamp filled" data-demo="stamp-4">★</div>
+          <div class="stamp" data-demo="stamp-5">?</div>
+          <div class="stamp" data-demo="stamp-6">?</div>
+        </div>
+        <div data-demo="progress-text">4 / 6 stamps collected</div>
+        <div class="progresswrap"><div class="progressfill" data-demo="progress-fill"></div></div>
+        <button class="scanbtn" data-demo="scan-btn" onclick="scanQR()">📷 Scan QR at Attraction</button>
+        <div class="banner" data-demo="complete-banner">🎉 Full Set Complete! Fan community unlocked.</div>
+        <button class="enterbtn" data-demo="enter-community-btn" onclick="enterCommunity()">Enter Fan Community</button>
+        <div class="panel" data-demo="community-panel">Welcome to the token-gated LINE community! Exclusive merch drop unlocked for completers.</div>
+      </div>
+      <div class="col-side card">
+        <h3>Leaderboard</h3>
+        <div class="lbitem"><span>1. Hanako</span><span>12 sets</span></div>
+        <div class="lbitem"><span>2. Taro</span><span>9 sets</span></div>
+        <div class="lbitem"><span>3. You</span><span data-demo="your-sets">0 sets</span></div>
+        <div class="lbitem"><span>4. Yuki</span><span>5 sets</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="venue-view" data-demo="venue-view" class="hidden">
+    <div class="vgrid">
+      <div class="vcard"><div class="vnum">3,214</div>Total Check-ins</div>
+      <div class="vcard"><div class="vnum">5</div>Active Campaigns</div>
+      <div class="vcard"><div class="vnum">Haunted House</div>Top Attraction</div>
+    </div>
+    <div class="vcard">
+      <p data-demo="campaign-status">Create a new seasonal stamp rally campaign in minutes.</p>
+      <button class="createbtn" data-demo="create-campaign-btn" onclick="createCampaign()">+ Create New Campaign</button>
+    </div>
+  </div>
+
+  <div class="footer">Prototype — all data is simulated</div>
+</div>
+
+<script>
+let collected = 4;
+function scanQR(){
+  if(collected >= 6) return;
+  collected++;
+  document.querySelector('[data-demo="stamp-'+collected+'"]').classList.add('filled');
+  document.querySelector('[data-demo="stamp-'+collected+'"]').textContent = '★';
+  document.querySelector('[data-demo="progress-text"]').textContent = collected + ' / 6 stamps collected';
+  document.querySelector('[data-demo="progress-fill"]').style.width = (collected/6*100) + '%';
+  if(collected === 6){
+    document.querySelector('[data-demo="complete-banner"]').style.display = 'block';
+    let btn = document.querySelector('[data-demo="enter-community-btn"]');
+    btn.classList.add('active');
+    btn.style.cursor = 'pointer';
+    document.querySelector('[data-demo="your-sets"]').textContent = '1 set';
+  }
+}
+function enterCommunity(){
+  if(collected < 6) return;
+  document.querySelector('[data-demo="community-panel"]').style.display = 'block';
+  document.querySelector('[data-demo="enter-community-btn"]').textContent = 'Joined Community ✓';
+}
+function toggleView(){
+  let v = document.getElementById('visitor-view');
+  let d = document.getElementById('venue-view');
+  let btn = document.querySelector('[data-demo="toggle-view-btn"]');
+  if(d.classList.contains('hidden')){
+    v.classList.add('hidden'); d.classList.remove('hidden');
+    btn.textContent = 'Back to Visitor Pass';
+  } else {
+    d.classList.add('hidden'); v.classList.remove('hidden');
+    btn.textContent = 'View Venue Dashboard';
+  }
+}
+function createCampaign(){
+  document.querySelector('[data-demo="campaign-status"]').textContent = 'Campaign "Summer Fireworks Rally" created!';
+}
+</script>
+</body>
+</html>
